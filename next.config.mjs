@@ -7,34 +7,17 @@ const disableChunk = !!process.env.DISABLE_CHUNK || mode === "export";
 console.log("[Next] build with chunk: ", !disableChunk);
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ["@svgr/webpack"],
-    });
+  const nextConfig = {
+    output: 'export',
+    images: {
+      unoptimized: true,
+    },
+    experimental: {
+      forceSwcTransforms: true,
+    },
+  }
 
-    if (disableChunk) {
-      config.plugins.push(
-        new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }),
-      );
-    }
-
-    config.resolve.fallback = {
-      child_process: false,
-    };
-
-    return config;
-  },
-  output: mode,
-  images: {
-    unoptimized: mode === "export",
-  },
-  experimental: {
-    forceSwcTransforms: true,
-  },
-};
-
+  export default nextConfig
 const CorsHeaders = [
   { key: "Access-Control-Allow-Credentials", value: "true" },
   { key: "Access-Control-Allow-Origin", value: "*" },
